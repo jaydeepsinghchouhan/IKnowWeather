@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IKnowWeather</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container text-center mt-3">
+      <div class="alert alert-success">Welcome to weather app</div>
+      <p>This is a real time weather application.</p>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+    <div class="container">
+      <div class="row" >
+        <div class="col-lg-4" id="column">
+          <!-- <form> -->
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" />
+          </div>
+          <input
+            type="button"
+            value="Fetch weather"
+            class="btn btn-primary"
+            onclick="btnClick()"
+          />
+          <!-- </form> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container text-center">
+      <div class="row">
+        <div class="col-lg-6">
+          <img src="./blue jay.jpg" alt="image" id="icon" />
+          <h2 id="weather-condition">Mist</h2>
+          <h1 id="temp">19&deg;C | 75&deg;F</h1>
+        </div>
+        <div class="col-lg-6">
+          <h2 id="city-name">Indore</h2>
+          <h1 id="state-country">Madhya Pradesh, India</h1>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function fetchWeather(city) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(
+          "Get",
+          `https://api.weatherapi.com/v1/current.json?key=7baca6b7abe44b55b8391151223112&q=${city}&aqi=no`
+        );
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            const weather = JSON.parse(xhr.responseText);
+            console.log(weather.current.condition.text);
+            console.log(weather);
+            img = console.log(weather.current.condition.icon);
+            document.getElementById("icon").src =
+              "https:" + weather.current.condition.icon;
+            document.getElementById("temp").innerHTML =
+              weather.current.temp_c +
+              "&deg;C | " +
+              weather.current.temp_f +
+              "&deg;F";
+            document.getElementById("weather-condition").innerHTML =
+              weather.current.condition.text;
+            document.getElementById("city-name").innerHTML =
+              weather.location.name;
+            document.getElementById("state-country").innerHTML =
+              weather.location.region + ", " + weather.location.country;
+            
+            
+            while(document.getElementById("divtag") != null) {
+                   var divtag = document.getElementById("divtag");
+                   divtag.remove();
+            }
+       
+          }
+          if (xhr.status == 400) {
+
+            var divtag = document.createElement("div");
+            divtag.setAttribute("class", "alert alert-primary ");
+            divtag.setAttribute("role", "alert");
+            divtag.setAttribute("id", "divtag");
+            divtag.innerHTML = "Location not found!!";
+            document.getElementById("column").appendChild(divtag);
+            xhr.abort();
+          }
+        };
+        xhr.send();
+    }
+      fetchWeather("Indore");
+
+      function btnClick() {
+        var city = document.getElementById("city").value;
+        fetchWeather(city);
+      }
+    </script>
+  </body>
+</html>
